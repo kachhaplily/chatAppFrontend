@@ -1,0 +1,38 @@
+<div class="user-container-style">
+  <div class="user-container">
+    <div class="search-bar">
+      <mat-form-field class="example-form-field">
+        <input matInput type="text" class="search-input" />
+
+        <button matSuffix mat-icon-button aria-label="Clear">
+          <mat-icon>search</mat-icon>
+        </button>
+      </mat-form-field>
+    </div>
+    <div class="user-list">
+      <mat-list *ngFor="let item of userList">
+        <div
+          class="user"
+          [routerLink]="['/dashboard/chat-dashboard', item?.path]"
+          [state]="{ authId: item?.authId }"
+          routerLinkActive="active"
+        >
+          <mat-icon>face</mat-icon>
+          <mat-list-item>
+            <span matListItemTitle>{{ item?.email }}</span>
+          </mat-list-item>
+          <span
+            [ngClass]="{
+              active: item?.isActive,
+              offline: !item?.isActive
+            }"
+          ></span>
+        </div>
+        <mat-divider></mat-divider>
+      </mat-list>
+    </div>
+  </div>
+  <div class="router-section">
+    <router-outlet></router-outlet>
+  </div>
+</div>

@@ -4,6 +4,7 @@ import { DashboardComponent } from './dashboard/dashboard/dashboard.component';
 export const routes: Routes = [
   {
     path: '',
-    component: DashboardComponent,
+    loadChildren: () =>
+      import('./dashboard/dashboard.module').then((m) => m.DashboardModule),
   },
 ];

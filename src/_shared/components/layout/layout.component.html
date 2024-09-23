@@ -1,0 +1,44 @@
+<mat-drawer-container class="example-container">
+  <mat-drawer #drawer class="example-sidenav" mode="side" [opened]="true">
+    <div class="example-sidenav-content">
+      <div class="user-profile">
+        <div class="settings">
+          <button mat-icon-button matSuffix>
+            <img
+              src="https://avatar.iran.liara.run/public/91"
+              alt="userprofile"
+            />
+          </button>
+
+          <button
+            mat-icon-button
+            matSuffix
+            [routerLink]="'/dashboard/chat-dashboard'"
+            routerLinkActive="active"
+          >
+            <mat-icon>chat</mat-icon>
+          </button>
+        </div>
+
+        <button mat-icon-button matSuffix (click)="logout()">
+          <mat-icon>logout</mat-icon>
+        </button>
+      </div>
+      <!-- <div class="user-list">
+        <ng-container *ngFor="let item of userList">
+          <mat-list role="list" class="user-profile-wrapper">
+            <mat-icon>face2</mat-icon>
+            <mat-list-item
+              role="listitem"
+              [routerLink]="['/dashboard', item.path]"
+              [state]="[item.authId]"
+              routerLinkActive="active"
+              >{{ item?.email }}</mat-list-item
+            >
+          </mat-list>
+        </ng-container>
+      </div> -->
+    </div>
+  </mat-drawer>
+  <router-outlet></router-outlet>
+</mat-drawer-container>

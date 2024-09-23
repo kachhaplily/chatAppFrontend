@@ -11,6 +11,7 @@ import { RouterModule } from '@angular/router';
 import { routes } from './app.routes';
 import { AuthModule } from '@auth0/auth0-angular';
 import { environment } from '../environmnet/environmnet';
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 
 @NgModule({
   declarations: [AppComponent],
@@ -21,7 +22,11 @@ import { environment } from '../environmnet/environmnet';
 
     AuthModule.forRoot({ ...environment.auth }),
   ],
-  providers: [provideHttpClient(withInterceptorsFromDi()), provideAnimations()],
+  providers: [
+    provideHttpClient(withInterceptorsFromDi()),
+    provideAnimations(),
+    provideAnimationsAsync(),
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

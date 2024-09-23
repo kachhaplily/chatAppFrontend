@@ -1,0 +1,63 @@
+.user-container-style {
+  height: 100%;
+  width: 100% !important;
+  display: flex;
+  justify-content: flex-start;
+  background-color: black;
+  .user-container {
+    max-width: fit-content;
+    height: 100%;
+    min-width: 350px;
+    max-width: fit-content;
+    display: flex;
+    flex-direction: column;
+    padding: 0 10px;
+    .search-bar {
+      padding: 10px 10px;
+      margin: 10px;
+      background-color: #0e100c;
+      border-radius: 12px;
+    }
+    .user-list {
+      flex-grow: 1;
+      padding: 10px 10px;
+      margin: 10px;
+
+      background: linear-gradient(225deg, #0d0e0b, #0f110d);
+      border-radius: 12px;
+      .user {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        .active {
+          display: block;
+          padding: 5px;
+          border-radius: 50%;
+          background-color: green;
+        }
+        .offline {
+          display: block;
+          padding: 5px;
+          border-radius: 50%;
+          background-color: rgb(192, 4, 4);
+        }
+      }
+      .mdc-list-item__primary-text {
+        font-size: 12px;
+      }
+    }
+  }
+
+  .router-section {
+    width: 100%;
+  }
+}
+.mat-mdc-form-field {
+  background-color: transparent;
+  padding: 0;
+}
+
+::ng-deep .mat-form-field .mat-input-element {
+  background-color: #f0f0f0; /* Set your desired background color */
+}

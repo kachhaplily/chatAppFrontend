@@ -1,0 +1,36 @@
+<div class="chat-container">
+  <div class="message-box">
+    <div *ngFor="let msg of messages">
+      <p
+        [ngClass]="{
+          'flex-right': msg?.senderUserId === senderId,
+          'flex-left': msg?.receiverUserId
+        }"
+      >
+        {{ msg?.messageText }}
+      </p>
+      <span
+        [ngClass]="{
+          'time flex-right-time': msg?.senderUserId === senderId,
+          'time flex-left-time ': msg?.receiverUserId
+        }"
+        >{{ msg?.sentAt | date : "short" }}</span
+      >
+    </div>
+  </div>
+  <div class="chat-form">
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>message</mat-label>
+      <input matInput [(ngModel)]="messageText" placeholder="Type a message" />
+      <button mat-icon-button matSuffix (click)="sendMessage()">
+        <mat-icon>send'</mat-icon>
+      </button>
+    </mat-form-field>
+
+    <!-- <button mat-fab (click)="sendMessage()">
+      <mat-icon>send</mat-icon>
+    </button> -->
+  </div>
+</div>
+
+<div class="container"></div>

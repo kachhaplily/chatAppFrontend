@@ -37,6 +37,7 @@ export class AppComponent implements OnInit {
                 this.auth.getAccessTokenSilently().subscribe({
                   next: (response) => {
                     localStorage.setItem('token', response);
+
                     this.router.navigate(['']);
                     this.isLoading = false;
                   },
@@ -85,5 +86,18 @@ export class AppComponent implements OnInit {
         console.error('Error retrieving access token:', error);
       }
     );
+  }
+
+  /**
+   * Method to fetch the user profile from Auth0
+   * @param token The access token
+   */
+  getUserProfile(): void {
+    this.auth.user$.subscribe({
+      next: (user) => {},
+      error: (error) => {
+        console.error('Error fetching user profile:', error);
+      },
+    });
   }
 }

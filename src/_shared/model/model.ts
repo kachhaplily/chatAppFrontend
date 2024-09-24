@@ -17,6 +17,7 @@ export interface userNavigation {
 export interface messageDto {
   ReceiverUserId?: string;
   MessageText: string;
+  imageBase64?: string;
 }
 
 export interface chatHistoryDto {
@@ -24,5 +25,10 @@ export interface chatHistoryDto {
   senderUserId: string;
   receiverUserId: string;
   messageText: string;
+  imageBase64?: string;
   sentAt: string;
+}
+
+export interface fileDto {
+  filePath: string;
 }

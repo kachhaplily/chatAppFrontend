@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpService } from './http.service';
 import { Observable } from 'rxjs';
-import { chatHistoryDto } from '../model/model';
+import { chatHistoryDto, fileDto } from '../model/model';
 
 @Injectable({
   providedIn: 'root',
@@ -25,5 +25,10 @@ export class ChatService {
   ): Observable<chatHistoryDto[]> {
     const apiName = `/Chat/chat_history?senderId=${senderId}&receiverId=${receiverId}`;
     return this.httpService.get(apiName);
+  }
+
+  uploadFile(data: FormData): Observable<fileDto> {
+    const api = '/api/file/upload';
+    return this.httpService.postFormData(api, data);
   }
 }

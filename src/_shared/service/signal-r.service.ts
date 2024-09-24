@@ -11,6 +11,7 @@ export class SignalrService {
     sender: string;
     receiver: string;
     message: string;
+    imageBase64?: string;
   } | null>(null);
   private onlineUsersSubject = new BehaviorSubject<string[]>([]); // Subject to emit online users
 
@@ -68,21 +69,29 @@ export class SignalrService {
         senderUserId: string;
         receiverUserId: string;
         messageText: string;
+        imageBase64?: string;
         sentAt: string;
       }) => {
-        const { senderUserId, receiverUserId, messageText } = chatMessage;
+        const { senderUserId, receiverUserId, messageText, imageBase64 } =
+          chatMessage;
         this.messageSource.next({
           sender: senderUserId,
           receiver: receiverUserId,
           message: messageText,
+          imageBase64: imageBase64,
         });
       }
     );
   }
 
-  public sendPrivateMessage(connectionId: string, message: string): void {
+  public sendPrivateMessage(
+    connectionId: string,
+    message: string,
+    fileUrl: string | null
+  ): void {
+    console.log(connectionId, fileUrl);
     this.hubConnection
-      .invoke('SendPrivateMessage', connectionId, message)
+      .invoke('SendPrivateMessage', connectionId, message, fileUrl)
       .catch((err) =>
         console.error('Error while sending private message:', err)
       );

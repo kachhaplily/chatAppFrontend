@@ -2,6 +2,7 @@
   <div class="message-box">
     <div *ngFor="let msg of messages">
       <p
+        *ngIf="msg.imageBase64 === null"
         [ngClass]="{
           'flex-right': msg?.senderUserId === senderId,
           'flex-left': msg?.receiverUserId
@@ -9,6 +10,33 @@
       >
         {{ msg?.messageText }}
       </p>
+      <img
+        *ngIf="isImageFile(msg?.imageBase64)"
+        [ngClass]="{
+          'img-box flex-right': msg?.senderUserId === senderId,
+          'img-box flex-left': msg?.receiverUserId
+        }"
+        [src]="msg?.imageBase64"
+        alt="Selected Image"
+      />
+
+      <!-- File attachment logic (for PDFs, Excel, etc.) -->
+      <a
+        *ngIf="
+          !isImageFile(msg?.imageBase64) && isDocumentFile(msg?.imageBase64)
+        "
+        [ngClass]="{
+          'file-link flex-right': msg?.senderUserId === senderId,
+          'file-link flex-left': msg?.receiverUserId
+        }"
+        [href]="msg?.imageBase64"
+        target="_blank"
+        download
+      >
+        <mat-icon>attach_file</mat-icon>
+        {{ getFileName(msg?.imageBase64) }}
+      </a>
+
       <span
         [ngClass]="{
           'time flex-right-time': msg?.senderUserId === senderId,
@@ -19,11 +47,24 @@
     </div>
   </div>
   <div class="chat-form">
+    <div *ngIf="fileLocalPath" class="file-name"></div>
     <mat-form-field appearance="outline" class="full-width">
       <mat-label>message</mat-label>
       <input matInput [(ngModel)]="messageText" placeholder="Type a message" />
+
+      <!-- HTML -->
+      <input
+        type="file"
+        id="fileInput"
+        style="display: none"
+        (change)="onFileSelect($event)"
+      />
+      <button mat-icon-button matSuffix (click)="browseFile()">
+        <mat-icon>insert_link</mat-icon>
+      </button>
+
       <button mat-icon-button matSuffix (click)="sendMessage()">
-        <mat-icon>send'</mat-icon>
+        <mat-icon>send</mat-icon>
       </button>
     </mat-form-field>
 

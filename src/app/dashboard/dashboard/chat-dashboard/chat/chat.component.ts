@@ -6,6 +6,7 @@ import { SignalrService } from '../../../../../_shared/service/signal-r.service'
 import { DashboardService } from '../../dashboard.service';
 import { SharedService } from '../../../../../_shared/service/shared.service';
 import { ChatService } from '../../../../../_shared/service/chat.service';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-chat',
@@ -18,12 +19,12 @@ export class ChatComponent implements OnInit {
   reciverId: string = '';
   authId?: string;
   senderId?: string;
-
+  selectedFile: string | null = null;
+  fileLocalPath?: string;
   requestMessgage: messageDto;
 
   constructor(
     private signalRService: SignalrService,
-    private route: ActivatedRoute,
     private router: Router,
     private sharedService: SharedService,
     private chatService: ChatService
@@ -69,6 +70,7 @@ export class ChatComponent implements OnInit {
           senderUserId: msg?.sender || '',
           receiverUserId: '',
           messageText: msg?.message || '',
+          imageBase64: msg?.imageBase64,
           sentAt: new Date().toISOString(),
         };
         this.messages.push(chatObj);
@@ -79,6 +81,7 @@ export class ChatComponent implements OnInit {
           senderUserId: '',
           receiverUserId: msg?.sender || '',
           messageText: msg?.message || '',
+          imageBase64: msg?.imageBase64,
           sentAt: new Date().toISOString(),
         };
         this.messages.push(chatObj);
@@ -96,11 +99,12 @@ export class ChatComponent implements OnInit {
     if (!this.authId) {
       return;
     }
-    this.requestMessgage = {
-      ReceiverUserId: this.authId,
-      MessageText: this.messageText,
-    };
-    this.signalRService.sendPrivateMessage(this.authId, this.messageText);
+
+    this.signalRService.sendPrivateMessage(
+      this.authId,
+      this.messageText,
+      this.selectedFile
+    );
     this.messageText = '';
   }
 
@@ -113,5 +117,68 @@ export class ChatComponent implements OnInit {
       .subscribe((data) => {
         this.messages = data;
       });
+  }
+
+  /**
+   *method to open the file
+   */
+  browseFile() {
+    const fileInput = document.getElementById('fileInput') as HTMLInputElement;
+    fileInput.click();
+  }
+
+  onFileSelect(event: Event) {
+    const fileInput = event.target as HTMLInputElement;
+    if (fileInput.files && fileInput.files.length > 0) {
+      const file = fileInput.files[0];
+      this.fileLocalPath = file.name;
+
+      // Create FormData object and append the file
+      const formData = new FormData();
+      formData.append('file', file); // Ensure the key matches the API expectation
+
+      // Call the uploadFile method with FormData
+      this.chatService.uploadFile(formData).subscribe({
+        next: (response) => {
+          this.selectedFile = response.filePath;
+        },
+        error: (error) => {
+          console.error('Error uploading file:', error);
+        },
+      });
+    }
+  }
+
+  // Helper function to check if the file is a document (PDF, DOCX, XLSX, etc.)
+  isDocumentFile(fileBase64: string | null | undefined): boolean {
+    if (!fileBase64) return false;
+
+    // Regular expression to check file extension in the Base64 URL or file name
+    const fileExtensions = /\.(pdf|docx?|xlsx?|pptx?)$/i;
+
+    // If the fileBase64 is a URL, you can extract the extension and test it
+    return fileExtensions.test(fileBase64);
+  }
+
+  // Helper function to check if the file is an image
+  isImageFile(fileBase64: string | null | undefined): boolean {
+    if (!fileBase64) return false;
+
+    // Regular expression to match common image file extensions
+    const imageExtensions = /\.(jpg|jpeg|png|gif|bmp|svg)$/i;
+
+    // Test if the fileBase64 or URL ends with any of the specified image extensions
+    return imageExtensions.test(fileBase64);
+  }
+
+  // Helper function to get file name (can be improved if fileBase64 contains full URL)
+  getFileName(fileBase64: string | null | undefined): string {
+    if (!fileBase64) return 'Unknown File';
+
+    // Optionally, extract file name from fileBase64 URL (if present)
+    const fileNameMatch = fileBase64.match(
+      /[^/\\&\?]+\.\w{3,4}(?=([\?&].*$|$))/
+    );
+    return fileNameMatch ? fileNameMatch[0] : 'Document';
   }
 }
